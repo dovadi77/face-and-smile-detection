@@ -1,10 +1,11 @@
 var video = document.getElementById("video");
 
 Promise.all([
-  faceapi.nets.tinyFaceDetector.loadFromUri("./models"),
+  faceapi.nets.ssdMobilenetv1.loadFromUri("./models"),
   faceapi.nets.faceLandmark68Net.loadFromUri("./models"),
   faceapi.nets.faceRecognitionNet.loadFromUri("./models"),
   faceapi.nets.faceExpressionNet.loadFromUri("./models"),
+  faceapi.nets.ageGenderNet.loadFromUri("./models"),
 ]).then(startVideo);
 
 function startVideo() {
@@ -24,22 +25,31 @@ video.addEventListener("play", () => {
   faceapi.matchDimensions(canvas, displaySize);
   setInterval(async () => {
     const detections = await faceapi
-      .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+      .detectAllFaces(video, new faceapi.SsdMobilenetv1Options())
       .withFaceLandmarks()
-      .withFaceExpressions();
+      .withFaceExpressions()
+      .withAgeAndGender();
     const resizedDetections = faceapi.resizeResults(detections, displaySize);
     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
     faceapi.draw.drawDetections(canvas, resizedDetections);
+    console.log(detections);
     if (detections[0] == null) {
-      $("#result").html("Face Not Found");
+      $("#face_finding").html("Face Not Found");
+      $("#result_emotion").html("------");
+      $("#result_age").html("------");
+      $("#result_gender").html("------");
     } else {
+      $("#face_finding").html("Face Detected");
       let happiness = 0;
       happiness = detections[0].expressions.happy;
       if (happiness > 0.85) {
-        $("#result").html("You're Seeing Happy :)");
+        $("#result_emotion").html("You're Seeing Happy :)");
       } else {
-        $("#result").html("You're Seeing didn't Happy :(");
+        $("#result_emotion").html("You're Seeing didn't Happy :(");
       }
+      let age = Math.round(detections[0].age);
+      $("#result_age").html(age);
+      $("#result_gender").html(detections[0].gender);
     }
-  }, 2000);
+  }, 1000);
 });
