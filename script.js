@@ -1,4 +1,15 @@
 var video = document.getElementById("video");
+var flipBtn = document.getElementById("flip");
+// default user media options
+let defaultsOpts = { audio: false, video: true };
+let shouldFaceUser = true;
+
+let supports = navigator.mediaDevices.getSupportedConstraints();
+if (supports["facingMode"] === true) {
+  flipBtn.disabled = false;
+}
+
+let stream = null;
 
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri("./models"),
@@ -9,11 +20,16 @@ Promise.all([
 ]).then(startVideo);
 
 function startVideo() {
-  navigator.getUserMedia(
-    { video: {} },
-    (stream) => (video.srcObject = stream),
-    (err) => console.error(err)
-  );
+  defaultsOpts.video = { facingMode: shouldFaceUser ? "user" : "environment" };
+  navigator.mediaDevices
+    .getUserMedia(defaultsOpts)
+    .then(function (_stream) {
+      stream = _stream;
+      video.srcObject = stream;
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
 }
 
 video.addEventListener("play", () => {
@@ -52,4 +68,15 @@ video.addEventListener("play", () => {
       $("#result_gender").html(detections[0].gender);
     }
   }, 1000);
+});
+
+flipBtn.addEventListener("click", function () {
+  if (stream == null) return;
+  // we need to flip, stop everything
+  stream.getTracks().forEach((t) => {
+    t.stop();
+  });
+  // toggle / flip
+  shouldFaceUser = !shouldFaceUser;
+  startVideo();
 });
