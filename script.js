@@ -1,7 +1,7 @@
 var video = document.getElementById("video");
 
 Promise.all([
-  faceapi.nets.ssdMobilenetv1.loadFromUri("./models"),
+  faceapi.nets.tinyFaceDetector.loadFromUri("./models"),
   faceapi.nets.faceLandmark68Net.loadFromUri("./models"),
   faceapi.nets.faceRecognitionNet.loadFromUri("./models"),
   faceapi.nets.faceExpressionNet.loadFromUri("./models"),
@@ -25,7 +25,7 @@ video.addEventListener("play", () => {
   faceapi.matchDimensions(canvas, displaySize);
   setInterval(async () => {
     const detections = await faceapi
-      .detectAllFaces(video, new faceapi.SsdMobilenetv1Options())
+      .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
       .withFaceExpressions()
       .withAgeAndGender();
