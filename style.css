@@ -1,0 +1,29 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  /* display: flex; */
+}
+#contain {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+canvas {
+  position: absolute;
+}
+
+#result {
+  display: block;
+  margin: 0 auto;
+}
+@media screen and (max-width: 992px) {
+  video {
+    width: 300px;
+    height: auto;
+  }
+}
