@@ -59,6 +59,11 @@ video.addEventListener("play", () => {
   const displaySize = { width: width, height: height };
   faceapi.matchDimensions(canvas, displaySize);
   setInterval(async () => {
+    const labeledFaceDescriptors = await loadLabeledImages();
+    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6);
+    const results = resizedDetections.map((d) =>
+      faceMatcher.findBestMatch(d.descriptor)
+    );
     const detections = await faceapi
       .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
@@ -87,22 +92,15 @@ video.addEventListener("play", () => {
       $("#result_age").html(age);
       $("#result_gender").html(detections[0].gender);
     }
-    const labeledFaceDescriptors = await loadLabeledImages();
-    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6);
-    const results = resizedDetections.map((d) =>
-      faceMatcher.findBestMatch(d.descriptor)
-    );
-    setTimeout(function () {
-      if (results[0] == null) {
-        $("#name").html("-------");
+    if (results[0] == null) {
+      $("#name").html("-------");
+    } else {
+      if (results[0].distance > 0.35) {
+        $("#name").html(results[0].label);
       } else {
-        if (results[0].distance > 0.35) {
-          $("#name").html(results[0].label);
-        } else {
-          $("#name").html("unknown");
-        }
+        $("#name").html("unknown");
       }
-    }, 500);
+    }
   }, 1000);
 });
 
