@@ -61,9 +61,6 @@ video.addEventListener("play", () => {
   setInterval(async () => {
     const labeledFaceDescriptors = await loadLabeledImages();
     const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6);
-    const results = resizedDetections.map((d) =>
-      faceMatcher.findBestMatch(d.descriptor)
-    );
     const detections = await faceapi
       .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
@@ -92,6 +89,9 @@ video.addEventListener("play", () => {
       $("#result_age").html(age);
       $("#result_gender").html(detections[0].gender);
     }
+    const results = resizedDetections.map((d) =>
+      faceMatcher.findBestMatch(d.descriptor)
+    );
     if (results[0] == null) {
       $("#name").html("-------");
     } else {
