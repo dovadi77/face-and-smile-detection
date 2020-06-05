@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
+    <link rel="shortcut icon" href="../img/logo.png" type="image/x-icon" />
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -17,24 +18,21 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
     <script defer src="face-api.min.js"></script>
-    <script defer src="script.js"></script>
+    <script defer src="script_light.js"></script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="container" id="contain">
       <video id="video" autoplay></video>
     </div>
-    <div class="container font-weight-bold mt-3">
-      <i> Detection slow and lag? Change to Light Mode. </i>
-    </div>
     <br />
+    <div class="container font-weight-bold">
+      <i> Light Mode doesn't support face recognition. </i>
+    </div>
     <div id="face_finding" class="container font-weight-bold">
       Face not Found
     </div>
     <div id="result_emotion" class="container font-weight-bold">
-      ------
-    </div>
-    <div id="name" class="container font-weight-bold">
       ------
     </div>
     <div class="container font-weight-bold">
@@ -50,7 +48,7 @@
     </div>
     <div class="container">
       <input type="button" value="Flip Camera" id="flip" />
-      <input type="button" value="Light Mode" id="light" />
+      <input type="button" value="Normal mode" id="normal" />
     </div>
   </body>
 </html>
