@@ -78,5 +78,6 @@ flipBtn.addEventListener("click", function () {
   });
   // toggle / flip
   shouldFaceUser = !shouldFaceUser;
+  $("canvas").remove();
   startVideo();
 });
