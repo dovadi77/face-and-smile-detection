@@ -20,7 +20,7 @@ Promise.all([
 ]).then(startVideo);
 
 function loadLabeledImages() {
-  const labels = ["fernando", "ivan", "jeilson"];
+  const labels = ["fernando", "jeilson", "ivan"];
   return Promise.all(
     labels.map(async (label) => {
       const descriptions = [];
@@ -30,9 +30,9 @@ function loadLabeledImages() {
           .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
           .withFaceLandmarks()
           .withFaceDescriptor();
+        console.log(i);
         descriptions.push(detections.descriptor);
       }
-      // console.log(descriptions);
       return new faceapi.LabeledFaceDescriptors(label, descriptions);
     })
   );
@@ -94,7 +94,7 @@ video.addEventListener("play", () => {
     );
     setTimeout(function () {
       if (results[0] == null) {
-        $("#name").html("----------");
+        $("#name").html("-------");
       } else {
         if (results[0].distance > 0.35) {
           $("#name").html(results[0].label);
@@ -102,7 +102,7 @@ video.addEventListener("play", () => {
           $("#name").html("unknown");
         }
       }
-    }, 1000);
+    }, 500);
   }, 1000);
 });
 
