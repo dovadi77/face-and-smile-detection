@@ -20,11 +20,11 @@ Promise.all([
 ]).then(startVideo);
 
 function loadLabeledImages() {
-  const labels = ["fernando", "valen"];
+  const labels = ["fernando", "valen", "ivan", "jeilson"];
   return Promise.all(
     labels.map(async (label) => {
       const descriptions = [];
-      for (let i = 1; i <= 2; i++) {
+      for (let i = 1; i <= 3; i++) {
         const img = await faceapi.fetchImage(`data_img/${label}/${i}.jpg`);
         const detections = await faceapi
           .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
