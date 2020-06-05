@@ -19,24 +19,24 @@ Promise.all([
   faceapi.nets.ageGenderNet.loadFromUri("./models"),
 ]).then(startVideo);
 
-function loadLabeledImages() {
-  const labels = ["fernando", "valen"];
-  return Promise.all(
-    labels.map(async (label) => {
-      const descriptions = [];
-      for (let i = 1; i <= 2; i++) {
-        const img = await faceapi.fetchImage(`data_img/${label}/${i}.jpg`);
-        const detections = await faceapi
-          .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
-          .withFaceLandmarks()
-          .withFaceDescriptor();
-        descriptions.push(detections.descriptor);
-      }
-      // console.log(descriptions);
-      return new faceapi.LabeledFaceDescriptors(label, descriptions);
-    })
-  );
-}
+// function loadLabeledImages() {
+//   const labels = ["fernando", "valen"];
+//   return Promise.all(
+//     labels.map(async (label) => {
+//       const descriptions = [];
+//       for (let i = 1; i <= 2; i++) {
+//         const img = await faceapi.fetchImage(`data_img/${label}/${i}.jpg`);
+//         const detections = await faceapi
+//           .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
+//           .withFaceLandmarks()
+//           .withFaceDescriptor();
+//         descriptions.push(detections.descriptor);
+//       }
+//       // console.log(descriptions);
+//       return new faceapi.LabeledFaceDescriptors(label, descriptions);
+//     })
+//   );
+// }
 
 function startVideo() {
   defaultsOpts.video = { facingMode: shouldFaceUser ? "user" : "environment" };
@@ -87,22 +87,22 @@ video.addEventListener("play", () => {
       $("#result_age").html(age);
       $("#result_gender").html(detections[0].gender);
     }
-    const labeledFaceDescriptors = await loadLabeledImages();
-    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6);
-    const results = resizedDetections.map((d) =>
-      faceMatcher.findBestMatch(d.descriptor)
-    );
-    setTimeout(function () {
-      if (results[0] == null) {
-        $("#name").html("----------");
-      } else {
-        if (results[0].distance > 0.35) {
-          $("#name").html(results[0].label);
-        } else {
-          $("#name").html("unknown");
-        }
-      }
-    }, 1000);
+    // const labeledFaceDescriptors = await loadLabeledImages();
+    // const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6);
+    // const results = resizedDetections.map((d) =>
+    //   faceMatcher.findBestMatch(d.descriptor)
+    // );
+    // setTimeout(function () {
+    //   if (results[0] == null) {
+    //     $("#name").html("----------");
+    //   } else {
+    //     if (results[0].distance > 0.35) {
+    //       $("#name").html(results[0].label);
+    //     } else {
+    //       $("#name").html("unknown");
+    //     }
+    //   }
+    // }, 1000);
   }, 1000);
 });
 
@@ -118,7 +118,7 @@ flipBtn.addEventListener("click", function () {
   startVideo();
 });
 
-$("#light").click(function (e) {
+$("#normal").click(function (e) {
   e.preventDefault();
-  window.location.href = "light.html";
+  window.location.href = "index.html";
 });
