@@ -30,7 +30,7 @@ function loadLabeledImages() {
           .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
           .withFaceLandmarks()
           .withFaceDescriptor();
-        console.log(i);
+        // console.log(i);
         descriptions.push(detections.descriptor);
       }
       return new faceapi.LabeledFaceDescriptors(label, descriptions);
