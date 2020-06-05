@@ -19,6 +19,25 @@ Promise.all([
   faceapi.nets.ageGenderNet.loadFromUri("./models"),
 ]).then(startVideo);
 
+function loadLabeledImages() {
+  const labels = ["fernando", "valen"];
+  return Promise.all(
+    labels.map(async (label) => {
+      const descriptions = [];
+      for (let i = 1; i <= 3; i++) {
+        const img = await faceapi.fetchImage(`data_img/${label}/${i}.jpg`);
+        const detections = await faceapi
+          .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
+          .withFaceLandmarks()
+          .withFaceDescriptor();
+        descriptions.push(detections.descriptor);
+      }
+      // console.log(descriptions);
+      return new faceapi.LabeledFaceDescriptors(label, descriptions);
+    })
+  );
+}
+
 function startVideo() {
   defaultsOpts.video = { facingMode: shouldFaceUser ? "user" : "environment" };
   navigator.mediaDevices
@@ -40,15 +59,18 @@ video.addEventListener("play", () => {
   const displaySize = { width: width, height: height };
   faceapi.matchDimensions(canvas, displaySize);
   setInterval(async () => {
+    const labeledFaceDescriptors = await loadLabeledImages();
+    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6);
     const detections = await faceapi
       .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
+      .withFaceDescriptors()
       .withFaceExpressions()
       .withAgeAndGender();
+    // console.log("aaaaa");
     const resizedDetections = faceapi.resizeResults(detections, displaySize);
     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
     faceapi.draw.drawDetections(canvas, resizedDetections);
-    console.log(detections);
     if (detections[0] == null) {
       $("#face_finding").html("Face Not Found");
       $("#result_emotion").html("------");
@@ -66,6 +88,14 @@ video.addEventListener("play", () => {
       let age = Math.round(detections[0].age);
       $("#result_age").html(age);
       $("#result_gender").html(detections[0].gender);
+    }
+    const results = resizedDetections.map((d) =>
+      faceMatcher.findBestMatch(d.descriptor)
+    );
+    if (results[0] == null) {
+      $("#name").html("----------");
+    } else {
+      $("#name").html(results[0].label);
     }
   }, 1000);
 });
