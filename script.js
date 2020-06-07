@@ -19,18 +19,20 @@ Promise.all([
   faceapi.nets.ageGenderNet.loadFromUri("./models"),
 ]).then(startVideo);
 
+var detection_mode = 1;
+
 function loadLabeledImages() {
   const labels = ["fernando", "jeilson", "ivan"];
   return Promise.all(
     labels.map(async (label) => {
       const descriptions = [];
-      for (let i = 1; i <= 3; i++) {
+      for (let i = 1; i <= detection_mode; i++) {
         const img = await faceapi.fetchImage(`data_img/${label}/${i}.jpg`);
         const detections = await faceapi
           .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
           .withFaceLandmarks()
           .withFaceDescriptor();
-        // console.log(i);
+        // console.log(detection_mode);
         descriptions.push(detections.descriptor);
       }
       return new faceapi.LabeledFaceDescriptors(label, descriptions);
@@ -93,7 +95,7 @@ video.addEventListener("play", () => {
       faceMatcher.findBestMatch(d.descriptor)
     );
     if (results[0] == null) {
-      $("#name").html("-------");
+      $("#name").html("------");
     } else {
       if (results[0].distance > 0.35) {
         $("#name").html(results[0].label);
@@ -101,7 +103,7 @@ video.addEventListener("play", () => {
         $("#name").html("unknown");
       }
     }
-  }, 1000);
+  }, 500);
 });
 
 flipBtn.addEventListener("click", function () {
@@ -119,4 +121,22 @@ flipBtn.addEventListener("click", function () {
 $("#light").click(function (e) {
   e.preventDefault();
   window.location.href = "light.html";
+});
+
+$("#low").click(function (e) {
+  e.preventDefault();
+  detection_mode = 1;
+  $("#accurate_mode").html("Less Accurate");
+});
+
+$("#medium").click(function (e) {
+  e.preventDefault();
+  detection_mode = 2;
+  $("#accurate_mode").html("Slightly Accurate");
+});
+
+$("#advance").click(function (e) {
+  e.preventDefault();
+  detection_mode = 3;
+  $("#accurate_mode").html("More Accurate");
 });

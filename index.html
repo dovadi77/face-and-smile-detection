@@ -26,7 +26,10 @@
       <video id="video" autoplay></video>
     </div>
     <div class="container font-weight-bold mt-3">
-      <i> Detection slow and lag? Change to Light Mode. </i>
+      <i>
+        Detection slow and lag? Change Face Recognition Accurate Mode or Go to
+        Light Mode
+      </i>
     </div>
     <br />
     <div id="face_finding" class="container font-weight-bold">
@@ -37,6 +40,14 @@
     </div>
     <div id="name" class="container font-weight-bold">
       ------
+    </div>
+    <div class="container">
+      <input type="button" value="Less Accurate" id="low" />
+      <input type="button" value="Slightly Accurate" id="medium" />
+      <input type="button" value="More Accurate" id="advance" />
+      <br />
+      Current Mode :
+      <p id="accurate_mode" class="font-weight-bold">Less Accurate</p>
     </div>
     <div class="container font-weight-bold">
       <br />
