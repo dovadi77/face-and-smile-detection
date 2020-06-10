@@ -27,3 +27,25 @@ canvas {
     height: auto;
   }
 }
+
+.font-bigger {
+  font-size: 27px;
+}
+
+.img-icon {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 12px;
+}
+
+.email-binus {
+  color: rgb(0, 152, 219);
+}
+
+.whatsapp {
+  color: rgb(74, 201, 89);
+}
+
+.github {
+  color: black;
+}
