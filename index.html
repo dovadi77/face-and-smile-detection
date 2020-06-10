@@ -22,13 +22,22 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div class="container">
+      <p>
+        Proudly Created by
+      </p>
+      <p><strong>Fernando Gunawan (Initiator)</strong></p>
+      <p><strong>Jeilson Phang</strong></p>
+      <p><strong>Ivan Yunus Kolotosa</strong></p>
+      <p><strong>Jesse Owen</strong></p>
+    </div>
     <div class="container" id="contain">
       <video id="video" autoplay></video>
     </div>
     <div class="container font-weight-bold mt-3">
       <i>
-        Detection slow and lag? Change Face Recognition Accurate Mode or Go to
-        Light Mode
+        To predict your age and gender click 'Predict'. If you are using
+        smartphone, you can change camera by click 'Flip Camera'
       </i>
     </div>
     <br />
@@ -38,20 +47,11 @@
     <div id="result_emotion" class="container font-weight-bold">
       ------
     </div>
-    <div id="name" class="container font-weight-bold">
-      ------
-    </div>
-    <div class="container">
-      <input type="button" value="Less Accurate" id="low" />
-      <input type="button" value="Slightly Accurate" id="medium" />
-      <input type="button" value="More Accurate" id="advance" />
-      <br />
-      Current Mode :
-      <p id="accurate_mode" class="font-weight-bold">Less Accurate</p>
-    </div>
     <div class="container font-weight-bold">
       <br />
       Prediction
+      <br />
+      <input type="button" value="Predict" id="calculate" />
       <br />
       Age
       <p id="result_age">------</p>
@@ -62,7 +62,12 @@
     </div>
     <div class="container">
       <input type="button" value="Flip Camera" id="flip" />
-      <input type="button" value="Light Mode" id="light" />
+    </div>
+    <div class="container text-center mt-3">
+      <strong
+        >Thanks to justadudewhohacks (face-api.js) and Tensorflow
+        (tensorflow.js) for providing the libraries to this application</strong
+      >
     </div>
   </body>
 </html>

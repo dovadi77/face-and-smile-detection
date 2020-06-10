@@ -19,27 +19,6 @@ Promise.all([
   faceapi.nets.ageGenderNet.loadFromUri("./models"),
 ]).then(startVideo);
 
-var detection_mode = 1;
-
-function loadLabeledImages() {
-  const labels = ["fernando", "jeilson", "ivan"];
-  return Promise.all(
-    labels.map(async (label) => {
-      const descriptions = [];
-      for (let i = 1; i <= detection_mode; i++) {
-        const img = await faceapi.fetchImage(`data_img/${label}/${i}.jpg`);
-        const detections = await faceapi
-          .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
-          .withFaceLandmarks()
-          .withFaceDescriptor();
-        // console.log(detection_mode);
-        descriptions.push(detections.descriptor);
-      }
-      return new faceapi.LabeledFaceDescriptors(label, descriptions);
-    })
-  );
-}
-
 function startVideo() {
   defaultsOpts.video = { facingMode: shouldFaceUser ? "user" : "environment" };
   navigator.mediaDevices
@@ -52,7 +31,10 @@ function startVideo() {
       console.log(err);
     });
 }
-
+var count = 0;
+var age_arr = [];
+var gender_arr = [];
+var face = false;
 video.addEventListener("play", () => {
   const canvas = faceapi.createCanvasFromMedia(video);
   $("#contain").append(canvas);
@@ -61,8 +43,6 @@ video.addEventListener("play", () => {
   const displaySize = { width: width, height: height };
   faceapi.matchDimensions(canvas, displaySize);
   setInterval(async () => {
-    const labeledFaceDescriptors = await loadLabeledImages();
-    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6);
     const detections = await faceapi
       .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
@@ -78,29 +58,22 @@ video.addEventListener("play", () => {
       $("#result_emotion").html("------");
       $("#result_age").html("------");
       $("#result_gender").html("------");
+      face = false;
     } else {
+      face = true;
       $("#face_finding").html("Face Detected");
       let happiness = 0;
       happiness = detections[0].expressions.happy;
       if (happiness > 0.85) {
-        $("#result_emotion").html("You're Seeing Happy :)");
+        $("#result_emotion").html("You're Seems Happy :)");
       } else {
-        $("#result_emotion").html("You're Seeing didn't Happy :(");
+        $("#result_emotion").html("You're Seems didn't Happy :(");
       }
-      let age = Math.round(detections[0].age);
-      $("#result_age").html(age);
-      $("#result_gender").html(detections[0].gender);
-    }
-    const results = resizedDetections.map((d) =>
-      faceMatcher.findBestMatch(d.descriptor)
-    );
-    if (results[0] == null) {
-      $("#name").html("------");
-    } else {
-      if (results[0].distance > 0.35) {
-        $("#name").html(results[0].label);
-      } else {
-        $("#name").html("unknown");
+      if (count < 6) {
+        let age = Math.round(detections[0].age);
+        age_arr.push(age);
+        gender_arr.push(detections[0].gender);
+        count++;
       }
     }
   }, 500);
@@ -118,25 +91,35 @@ flipBtn.addEventListener("click", function () {
   startVideo();
 });
 
-$("#light").click(function (e) {
+$("#calculate").click(function (e) {
   e.preventDefault();
-  window.location.href = "light.html";
-});
-
-$("#low").click(function (e) {
-  e.preventDefault();
-  detection_mode = 1;
-  $("#accurate_mode").html("Less Accurate");
-});
-
-$("#medium").click(function (e) {
-  e.preventDefault();
-  detection_mode = 2;
-  $("#accurate_mode").html("Slightly Accurate");
-});
-
-$("#advance").click(function (e) {
-  e.preventDefault();
-  detection_mode = 3;
-  $("#accurate_mode").html("More Accurate");
+  console.log(gender_arr);
+  console.log(age_arr);
+  var male_count = 0;
+  var female_count = 0;
+  var age = 0;
+  for (let index = 0; index < age_arr.length; index++) {
+    age += age_arr[index];
+    if (gender_arr[index] == "male") {
+      male_count++;
+    } else if (gender_arr[index] == "female") {
+      female_count++;
+    }
+  }
+  if (face == true) {
+    if (male_count > female_count) {
+      $("#result_gender").html("Male");
+    } else {
+      $("#result_gender").html("Female");
+    }
+    age = Math.round(age / 6);
+    $("#result_age").html(age);
+    gender_arr = [];
+    age_arr = [];
+    count = 0;
+  } else {
+    gender_arr = [];
+    age_arr = [];
+    count = 0;
+  }
 });
